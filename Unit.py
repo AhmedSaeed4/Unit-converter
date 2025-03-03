@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import os
 
-# Load your Gemini API key (store it securely, e.g., Streamlit secrets)
+# handling gemini api key
 try:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=GEMINI_API_KEY)
@@ -25,7 +25,6 @@ def convert_length(value, from_unit, to_unit):
         "inches": 0.0254,
         "nautical miles": 1852.0,
     }
-    # Convert to meters first, then to the target unit
     meters = value * length_units[from_unit]
     return meters / length_units[to_unit]
 
@@ -43,7 +42,6 @@ def convert_area(value, from_unit, to_unit):
         "square feet": 0.092903,
         "square inches": 0.00064516,
     }
-    # Convert to square meters first
     sq_meters = value * area_units[from_unit]
     return sq_meters / area_units[to_unit]
 
@@ -55,7 +53,6 @@ def convert_data_rate(value, from_unit, to_unit):
         "megabits per second": 1e6,
         "gigabits per second": 1e9,
     }
-    # Convert to bits per second first
     bps = value * data_rate_units[from_unit]
     return bps / data_rate_units[to_unit]
 
@@ -68,7 +65,7 @@ def convert_digital_storage(value, from_unit, to_unit):
         "gigabytes": 1024.0**3,
         "terabytes": 1024.0**4,
     }
-    # Convert to bytes first
+   
     bytes_val = value * storage_units[from_unit]
     return bytes_val / storage_units[to_unit]
 
@@ -82,7 +79,7 @@ def convert_energy(value, from_unit, to_unit):
         "watt-hours": 3600.0,
         "kilowatt-hours": 3.6e6,
     }
-    # Convert to joules first
+    
     joules = value * energy_units[from_unit]
     return joules / energy_units[to_unit]
 
@@ -94,7 +91,7 @@ def convert_frequency(value, from_unit, to_unit):
         "megahertz": 1e6,
         "gigahertz": 1e9,
     }
-    # Convert to hertz first
+   
     hertz = value * frequency_units[from_unit]
     return hertz / frequency_units[to_unit]
 
@@ -105,7 +102,7 @@ def convert_fuel_economy(value, from_unit, to_unit):
         "miles per gallon (US)": 235.215,
         "miles per gallon (UK)": 282.481,
     }
-    # Convert to liters per 100 km first
+    
     l_per_100km = value * fuel_units[from_unit]
     return l_per_100km / fuel_units[to_unit]
 
@@ -120,7 +117,7 @@ def convert_mass(value, from_unit, to_unit):
         "ounces": 28.3495,
         "stones": 6350.29,
     }
-    # Convert to grams first
+    
     grams = value * mass_units[from_unit]
     return grams / mass_units[to_unit]
 
@@ -130,7 +127,7 @@ def convert_plane_angle(value, from_unit, to_unit):
         "degrees": 1.0,
         "radians": 57.2958,
     }
-    # Convert to degrees first
+
     degrees = value * angle_units[from_unit]
     return degrees / angle_units[to_unit]
 
@@ -144,7 +141,7 @@ def convert_pressure(value, from_unit, to_unit):
         "millimeters of mercury": 133.322,
         "pounds per square inch": 6894.76,
     }
-    # Convert to pascals first
+  
     pascals = value * pressure_units[from_unit]
     return pascals / pressure_units[to_unit]
 
@@ -152,12 +149,12 @@ def convert_pressure(value, from_unit, to_unit):
 def convert_speed(value, from_unit, to_unit):
     speed_units = {
         "meters per second": 1.0,
-        "kilometers per hour": 1 / 3.6,  # Corrected: km/h is *smaller* than m/s
+        "kilometers per hour": 1 / 3.6,  
         "miles per hour": 0.44704,
         "feet per second": 0.3048,
         "knots": 0.514444,
     }
-    # Convert to meters per second first
+   
     mps = value * speed_units[from_unit]
     return mps / speed_units[to_unit]
 
@@ -175,7 +172,7 @@ def convert_temperature(value, from_unit, to_unit):
         return (value - 32) * 5 / 9 + 273.15
     elif from_unit == "Kelvin" and to_unit == "Fahrenheit":
         return (value - 273.15) * 9 / 5 + 32
-    return value  # Should not happen, but good to have a default
+    return value 
 
 
 def convert_time(value, from_unit, to_unit):
@@ -186,7 +183,7 @@ def convert_time(value, from_unit, to_unit):
         "days": 86400.0,
         "weeks": 604800.0,
     }
-    # Convert to seconds first
+   
     seconds = value * time_units[from_unit]
     return seconds / time_units[to_unit]
 
@@ -204,7 +201,7 @@ def convert_volume(value, from_unit, to_unit):
         "fluid ounces (US)": 2.95735e-5,
         "fluid ounces (UK)": 2.84131e-5,
     }
-    # Convert to cubic meters first
+    
     cubic_meters = value * volume_units[from_unit]
     return cubic_meters / volume_units[to_unit]
 
@@ -230,11 +227,11 @@ def verify_with_gemini(value, from_unit, to_unit, result):
         return f"Error during Gemini API call: {e}"
 
 
-# Streamlit UI
+
 st.title("Unit Converter with Gemini Verification")
 st.sidebar.header("Conversion Options")
 
-# Select category
+#  category
 category = st.sidebar.selectbox(
     "Select a category",
     [
@@ -255,10 +252,10 @@ category = st.sidebar.selectbox(
     ],
 )
 
-# Input value
+
 value = st.number_input("Enter the value to convert", value=0.0)
 
-# Select units based on category
+#  category condition
 if category == "Length":
     from_unit = st.selectbox(
         "From Unit",
@@ -496,9 +493,9 @@ elif category == "Volume":
     )
     result = convert_volume(value, from_unit, to_unit)
 else:
-    result = None  # Handle the case where no category is selected
+    result = None  
 
-# Display result
+
 if result is not None:
     st.write(f"Converted value: {result} {to_unit}")
 
